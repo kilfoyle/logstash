@@ -39,17 +39,28 @@ echo Using drive !use_drive! for %WORKSPACE%
 :: change current directory to that drive
 !use_drive!
 
-if defined GRADLE_OPTS (
-  set GRADLE_OPTS=%GRADLE_OPTS% -Djdk.io.File.enableADS=true
+if defined JAVA_OPTS (
+  set JAVA_OPTS="%JAVA_OPTS% -Djdk.io.File.enableADS=true"
 ) else (
-  set GRADLE_OPTS=-Djdk.io.File.enableADS=true
+  set JAVA_OPTS="-Djdk.io.File.enableADS=true"
+)
+
+if defined JRUBY_OPTS (
+  set JRUBY_OPTS="%JRUBY_OPTS% -J-Xmx1g -J-Djdk.io.File.enableADS=true"
+) else (
+  set JRUBY_OPTS="-J-Xmx1g -J-Djdk.io.File.enableADS=true"
+)
+if defined GRADLE_OPTS (
+  set GRADLE_OPTS="%GRADLE_OPTS% -Djdk.io.File.enableADS=true"
+) else (
+  set GRADLE_OPTS="-Djdk.io.File.enableADS=true"
 )
 
 echo Running core tests..
 if defined BUILD_JAVA_HOME (
   set GRADLE_OPTS=%GRADLE_OPTS% -Dorg.gradle.java.home=%BUILD_JAVA_HOME%
 )
-echo Invoking Gradle, GRADLE_OPTS: %GRADLE_OPTS%, BUILD_JAVA_HOME: %BUILD_JAVA_HOME%
+echo Invoking Gradle, GRADLE_OPTS: %GRADLE_OPTS%, BUILD_JAVA_HOME: %BUILD_JAVA_HOME%, JRUBY_OPTS: %JRUBY_OPTS%, JAVA_OPTS: %JAVA_OPTS%
 call .\gradlew.bat test --console=plain --no-daemon --info
 
 if errorlevel 1 (
